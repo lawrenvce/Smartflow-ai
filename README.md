@@ -1,14 +1,18 @@
 # SmartFlow AI
 
-AI-powered trading assistant using:
+AI-powered trading assistant.
 
+## Core Features
 - Smart Money Concepts (SMC)
 - Multi-timeframe analysis
 - AI scoring
 - Telegram alerts
 
-Markets:
+## Supported Markets
 - XAUUSD
 - EURUSD
 - GBPUSD
 - USDJPY
+
+## Project Status
+Currently under development.
