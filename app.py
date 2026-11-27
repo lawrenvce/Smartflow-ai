@@ -1,47 +1,43 @@
 import streamlit as st
-
-from smc.multi_timeframe import analyze_timeframes
+from smc.market_data import get_market_data
 
 st.set_page_config(
     page_title="SmartFlow AI",
     layout="wide"
 )
 
-st.title("📈 SmartFlow AI Dashboard")
+st.title("SmartFlow AI")
+st.write("AI-powered market analysis dashboard")
 
-signal = analyze_timeframes(
-    htf_trend="bullish",
-    mtf_trend="bullish",
-    ltf_signal="bullish"
+assets = {
+    "XAUUSD": "GC=F",
+    "EURUSD": "EURUSD=X",
+    "GBPUSD": "GBPUSD=X",
+    "USDJPY": "JPY=X"
+}
+
+symbol = st.selectbox(
+    "Choose Trading Pair",
+    list(assets.keys())
 )
 
-col1, col2, col3, col4 = st.columns(4)
+if st.button("Load Market Data"):
 
-with col1:
-    st.metric("4H Trend", "Bullish")
+    with st.spinner("Fetching market data..."):
 
-with col2:
-    st.metric("1H Trend", "Bullish")
+        data = get_market_data(assets[symbol])
 
-with col3:
-    st.metric("15M Entry", "Bullish")
+    if data is None or data.empty:
+        st.error("No market data received. Please try again.")
 
-with col4:
-    st.metric("Signal", signal)
+    else:
+        st.success(f"{symbol} market data loaded successfully!")
 
-st.divider()
+        st.subheader(f"{symbol} Market Data")
 
-st.subheader("Risk Settings")
+        st.dataframe(data.tail())
 
-account_balance = 10000
-risk_percent = 1
+        st.subheader("Closing Price Chart")
 
-st.write(f"Account Balance: ${account_balance}")
-st.write(f"Risk Per Trade: {risk_percent}%")
+        st.line_chart(data["Close"])
 
-if signal == "BUY":
-    st.success("✅ BUY Signal Detected")
-elif signal == "SELL":
-    st.error("🔻 SELL Signal Detected")
-else:
-    st.warning("⚠️ No Trade Setup")
